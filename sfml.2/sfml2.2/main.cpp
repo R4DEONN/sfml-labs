@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <cmath>
+#include <iostream>
 
 using namespace std;
 
@@ -35,14 +36,16 @@ int main()
 
 		constexpr float speed = 10.f;
 
-		const float dt = clock.restart().asSeconds();
+		const float dt = clock.getElapsedTime().asSeconds();
 
-		float circleAngle = float(2 * M_PI * circlePoint) / float(pointCount);
-		circlePoint++;
-		if (circlePoint > pointCount) circlePoint = 0;
+		float circleAngle = float(2 * M_PI) * dt;
+		if (circleAngle >= float(2 * M_PI))
+		{
+			clock.restart();
+		}
 		sf::Vector2f offset = sf::Vector2f{
-			circleRadius * sin(circleAngle) * speed * dt,
-			circleRadius * cos(circleAngle) * speed * dt,
+			circleRadius * sin(circleAngle),
+			circleRadius * cos(circleAngle),
 		};
 
 		sf::ConvexShape shape;
