@@ -7,7 +7,6 @@ set(SFML_STATIC_LIBRARIES TRUE)
 find_package(Freetype)
 find_package(JPEG)
 find_package(SFML 2 COMPONENTS window graphics system REQUIRED)
-include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(022 ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 
 target_compile_features(022 PUBLIC cxx_std_17)
