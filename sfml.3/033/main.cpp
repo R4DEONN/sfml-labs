@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <iostream>
 
 using namespace std;
 
@@ -65,14 +66,47 @@ void pollEvents(sf::RenderWindow& window, sf::Vector2f& mousePosition)
 void update(const sf::Vector2f& mousePosition, Eye& leftEye, Eye& rightEye)
 {
 	const sf::Vector2f leftEyePos = leftEye.white.getPosition();
-	const sf::Vector2f leftDelta = mousePosition - leftEyePos;
+	sf::Vector2f leftDelta  = mousePosition - leftEyePos;
+	if (leftDelta.x > 35 * cos(abs(leftDelta.y) / 70))
+	{
+		leftDelta.x = 35 * cos(abs(leftDelta.y / leftDelta.x) * 2);
+	}
+	else if (leftDelta.x < -35 * cos(abs(leftDelta.y) / 70))
+	{
+		leftDelta.x = -35 * cos(abs(leftDelta.y / leftDelta.x) * 2);
+	}
+	if (leftDelta.y > 70)
+	{
+		cout << leftDelta.x << " " << sin(abs(leftDelta.x) / 35) << endl;
+		leftDelta.y = 70 * sin(abs(leftDelta.x) / 35);
+	}
+	else if (leftDelta.y < -70)
+	{
+		leftDelta.y = -70 * sin(abs(leftDelta.x) / 35);
+	}
 	leftEye.pupil.setPosition({
-		leftEyePos.x + 35 / (float(WINDOW_WIDTH) / 2) * leftDelta.x + 35,
-		leftEyePos.y + 70 / (float(WINDOW_WIDTH) / 2 - 35) * leftDelta.y
+		leftEyePos.x + leftDelta.x + 35,
+		leftEyePos.y + leftDelta.y
 	});
 
 	const sf::Vector2f rightEyePos = rightEye.white.getPosition();
-	const sf::Vector2f rightDelta = mousePosition - rightEyePos;
+	sf::Vector2f rightDelta = mousePosition - rightEyePos;
+	if (rightDelta.x > 35)
+	{
+		rightDelta.x = 35 * cos(abs(rightDelta.y) / 70);
+	}
+	else if (rightDelta.x < -35)
+	{
+		rightDelta.x = -35 * cos(abs(rightDelta.y) / 70);
+	}
+	if (rightDelta.y > 70)
+	{
+		rightDelta.y = 70;
+	}
+	else if (rightDelta.y < -70)
+	{
+		rightDelta.y = -70;
+	}
 	rightEye.pupil.setPosition({
 		rightEyePos.x + 35 / (float(WINDOW_WIDTH) / 2) * rightDelta.x + 35,
 		rightEyePos.y + 70 / (float(WINDOW_WIDTH) / 2 - 35) * rightDelta.y

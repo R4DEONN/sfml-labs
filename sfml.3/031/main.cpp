@@ -57,7 +57,7 @@ void update(const sf::Vector2f& mousePosition, sf::ConvexShape& pointer, sf::Clo
 	}
 	if (std::abs(angle - prevRotation) > 15)
 	{
-		if (std::abs(prevRotation - angle) > std::abs(prevRotation - angle - 360))
+		if (std::abs(prevRotation - angle) > std::abs(prevRotation - angle + 360))
 		{
 			dA = 15 * dt;
 		}
