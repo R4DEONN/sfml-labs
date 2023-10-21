@@ -55,20 +55,17 @@ void update(const sf::Vector2f& mousePosition, sf::ConvexShape& pointer, sf::Clo
 	{
 		angle += 360;
 	}
-	if (std::abs(angle - prevRotation) > 15)
+	if (std::abs(360 - prevRotation + angle) > 360)
 	{
-		if (std::abs(prevRotation - angle) > std::abs(prevRotation - angle + 360))
-		{
-			dA = 15 * dt;
-		}
-		else
-		{
-			dA = -15 * dt;
-		}
+		angle -= 360;
+	}
+	if (std::abs(360 - prevRotation + angle) > std::abs(angle - prevRotation))
+	{
+		dA = -15 * dt;
 	}
 	else
 	{
-		dA = (angle - prevRotation) * dt;
+		dA = 15 * dt;
 	}
 
 	pointer.rotate(dA);

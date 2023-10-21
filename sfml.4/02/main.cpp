@@ -51,45 +51,47 @@ float toDegrees(float radians)
 	return float(double(radians) * 180.0 / M_PI);
 }
 
-// Обновляет фигуру, указывающую на мышь
-void update(const sf::Vector2f& mousePosition, sf::ConvexShape& arrow, sf::Clock& clock)
+void updateRotation(const sf::Vector2f& mousePosition, sf::ConvexShape& arrow, float dt)
 {
 	const sf::Vector2f delta = mousePosition - arrow.getPosition();
 	float angle = toDegrees(atan2(delta.y, delta.x));
-	const float dt = clock.restart().asSeconds();
-	float dA{};
+	float dA;
 	float prevRotation = arrow.getRotation();
 
 	if (angle < 0)
 	{
 		angle += 360;
 	}
-
-	if (abs(angle - prevRotation) < 0.1)
+	if (std::abs(360 - prevRotation + angle) > 360)
 	{
-		return;
+		angle -= 360;
 	}
-//	if (std::abs(angle - prevRotation) > 90)
-//	{
-
-//	cout << angle << " " << prevRotation << endl;
-//	cout << std::abs(prevRotation - angle) << " " << std::abs(prevRotation - angle + 360) << " "
-//		 << (std::abs(prevRotation - angle) > std::abs(prevRotation - angle + 360)) << endl;
-
-	if (std::abs(prevRotation - angle) <= std::abs(prevRotation - angle + 360))
-	{
-		dA = 90 * dt;
-	}
-	else
+	if (std::abs(360 - prevRotation + angle) > std::abs(angle - prevRotation))
 	{
 		dA = -90 * dt;
 	}
-//	}
-//	else
-//	{
-//		dA = angle - prevRotation;
-//	}
+	else
+	{
+		dA = 90 * dt;
+	}
 	arrow.rotate(dA);
+}
+
+void updatePosition(const sf::Vector2f& mousePosition, sf::ConvexShape& arrow, float dt)
+{
+	const sf::Vector2f delta = mousePosition - arrow.getPosition();
+	const float deltaLength = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+	const sf::Vector2f direction = { delta.x / deltaLength, delta.y / deltaLength };
+	const float speed = 20.0f;
+	arrow.move(direction * speed * dt);
+}
+
+// Обновляет фигуру, указывающую на мышь
+void update(const sf::Vector2f& mousePosition, sf::ConvexShape& arrow, sf::Clock& clock)
+{
+	const float dt = clock.restart().asSeconds();
+	updateRotation(mousePosition, arrow, dt);
+	updatePosition(mousePosition, arrow, dt);
 }
 
 // Рисует и выводит один кадр
